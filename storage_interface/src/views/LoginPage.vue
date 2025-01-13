@@ -78,12 +78,11 @@
   
   .logo-container {
     text-align: center;
-    margin-bottom: 20px;
   }
   
   .logo {
-    max-width: 200px; /* Ajuste o tamanho conforme necessário */
-    max-height: 200px;
+    max-width: 300px; /* Ajuste o tamanho conforme necessário */
+    max-height: 300px;
   }
   
   .form-group {
