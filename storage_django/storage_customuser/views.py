@@ -1,38 +1,29 @@
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import UserSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 from django.views import View
 from .models import CustomUser
+from .forms import SignUpForm
 from .utils import validate_user_data, get_user_response
 
-
-class SignUpView(View):
-    def post(self, request):
-        data = request.POST
-        if not validate_user_data(data): 
-            return JsonResponse({'error': 'Invalid data'}, status=400)
-
-        user = User.objects.create_user(
-            username=data['email'],
-            password=data['password'],
-            first_name=data['primeiro_nome'],
-            last_name=data['ultimo_nome']
-        )
-
-        custom_user = CustomUser.objects.create(
-            user_id=user.id,
-            matricula=data['matricula'],
-            primeiro_nome=data['primeiro_nome'],
-            ultimo_nome=data['ultimo_nome'],
-            email=data['email'],
-            telefone=data.get('telefone'),
-            password=user.password
-        )
-
-        return JsonResponse({'message': 'User registered successfully'}, status=201)
+@api_view(['POST'])
+def signup(request):
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Cadastro realizado com sucesso!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(View):
+
     def post(self, request):
         data = request.POST
         user = authenticate(username=data['email'], password=data['password'])

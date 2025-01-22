@@ -39,16 +39,53 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "storage_management",
     "storage_customuser",
+    "corsheaders",
+    "rest_framework",
+    "rest_framework_simplejwt",
 ]
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+
+
+
+CSRF_COOKIE_NAME = 'csrftoken'  # Nome do cookie CSRF
+CSRF_COOKIE_HTTPONLY = False  # Permite acesso ao cookie via JavaScript
+CSRF_COOKIE_SAMESITE = 'None'  # Permite o CSRF em cookies cross-origin
+CORS_ALLOW_CREDENTIALS = True  # Permite o envio de cookies entre domínios
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8000',
+    'http://localhost:5173',
+]
+CORS_ALLOW_CREDENTIALS = True  # Permite o envio de cookies
+APPEND_SLASH = False
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'  # Usando sessões com cookies
+SESSION_COOKIE_NAME = "sessionid"
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+
+
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',  # Verifique se esta linha está presente
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  
 ]
 
 ROOT_URLCONF = "storage_config.urls"

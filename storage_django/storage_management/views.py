@@ -1,7 +1,9 @@
 from django.http import JsonResponse
-from .models import Produto, Categoria, Fornecedor
-from customuser.models import CustomUser
+from django.views import View
+from django.contrib.auth import authenticate, login
 
+from .models import Produto, Categoria, Fornecedor
+from storage_customuser.models import CustomUser
 
 class BaseSiteViews(View):
     data_table = None 
