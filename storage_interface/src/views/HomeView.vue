@@ -5,7 +5,7 @@
 
     <main class="main-content">
       <div class="search-bar">
-        <input type="text" placeholder="pesquisar" />
+        <input type="text" placeholder="Pesquisar" />
         <button>🔍</button>
       </div>
     </main>
@@ -26,46 +26,27 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Afacad&display=swap');
 
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%; /* Faz com que o corpo ocupe toda a altura da tela */
-  display: flex;
-  flex-direction: column;
-}
-
 .home {
-  display: flex;
-  height: 100vh; /* Define a altura para 100% da altura da tela */
-  background-color: #ffffff;
-  font-family: 'Afacad', sans-serif;
+display: flex;
+background-color: #ffffff; /* Fundo leve para contraste */
+font-family: 'Afacad', sans-serif; /* Definir a fonte Afacad */
 }
-
 .main-content {
   flex: 1;
   padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Alinha o conteúdo ao topo */
 }
-
 .search-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  gap: 10px;
+  justify-content: center; /* Centraliza os elementos horizontalmente */
+  width: 100%; /* Garante que a barra ocupe toda a largura disponível */
+  gap: 10px; /* Espaçamento entre os elementos */
 }
 
 .search-bar input {
-  width: 70%;
+  width: 70%; /* Ajusta a largura do campo de pesquisa */
   padding: 10px;
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
