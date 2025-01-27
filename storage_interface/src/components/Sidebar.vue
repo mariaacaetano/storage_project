@@ -10,16 +10,16 @@
         <li @click="navigateTo('/categorias')">
           <i class="icon">📋</i> Categorias
         </li>
-        <li @click="navigateTo('/fornecedores')">
+        <li @click="navigateTo('/fornecedor')">
           <i class="icon">🚚</i> Fornecedores
         </li>
-        <li @click="navigateTo('/clientes')">
+        <li>
           <i class="icon">👥</i> Clientes
         </li>
         <li @click="navigateTo('/funcionarios')">
           <i class="icon">👷</i> Funcionários
         </li>
-        <li @click="navigateTo('/caixa')">
+        <li>
           <i class="icon">💰</i> Caixa
         </li>
       </ul>

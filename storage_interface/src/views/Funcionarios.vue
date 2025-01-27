@@ -7,7 +7,7 @@
     <main class="main-content">
       <h1 style="font-size:50px; margin: 0;">Funcionários</h1>
       <div class="search-bar">
-        <input type="text" v-model="searchQuery" placeholder="Pesquisar funcionários" />
+        <input type="text" v-model="searchQuery" placeholder="Pesquisar" />
         <button @click="searchFuncionarios">🔍</button>
 
         <!-- Botão Criar Novo ao lado da search-bar -->
