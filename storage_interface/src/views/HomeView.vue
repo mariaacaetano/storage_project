@@ -26,28 +26,46 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Afacad&display=swap');
 
-.home {
-display: flex;
-background-color: #ffffff; /* Fundo leve para contraste */
-font-family: 'Afacad', sans-serif; /* Definir a fonte Afacad */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+html, body {
+  height: 100%; /* Faz com que o corpo ocupe toda a altura da tela */
+  display: flex;
+  flex-direction: column;
+}
+
+.home {
+  display: flex;
+  height: 100vh; /* Define a altura para 100% da altura da tela */
+  background-color: #ffffff;
+  font-family: 'Afacad', sans-serif;
+}
+
 .main-content {
   flex: 1;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Alinha o conteúdo ao topo */
 }
+
 .search-bar {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centraliza os elementos horizontalmente */
-  width: 100%; /* Garante que a barra ocupe toda a largura disponível */
-  gap: 10px; /* Espaçamento entre os elementos */
-  margin-bottom: 16px;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
 }
 
 .search-bar input {
-  width: 70%; /* Ajusta a largura do campo de pesquisa */
+  width: 70%;
   padding: 10px;
-  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
