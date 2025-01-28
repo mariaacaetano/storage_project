@@ -20,11 +20,11 @@
       <!-- Detalhes do Perfil -->
       <div class="profile-details">
         <div class="profile-info">
-          <img src="@/assets/profile_pattern.jpeg" alt="Foto de Perfil" class="profile-picture" />
+          <img :src="userProfile.picture" alt="Foto de Perfil" class="profile-picture" />
           <div class="details">
-            <h2>Fulaninho da Silva</h2>
-            <p>Email: fulaninho@example.com</p>
-            <p>Telefone: (11) 12345-6789</p>
+            <h2>{{ userProfile.name }}</h2>
+            <p>Email: {{ userProfile.email }}</p>
+            <p>Telefone: {{ userProfile.phone }}</p>
           </div>
         </div>
       </div>
@@ -40,22 +40,33 @@
 
 <script>
 import Sidebar from "@/components/Sidebar.vue";
+import userStore from "@/store/userGetInfo.js"; // Importando o arquivo da store
 
 export default {
   name: "Profile",
   components: {
     Sidebar,
   },
+  computed: {
+    // Acessando diretamente o estado da store
+    userProfile() {
+      return userStore.state.userProfile;
+    },
+  },
+  created() {
+    // Se os dados do usuário não estiverem carregados, chamar a ação para obter os dados
+    if (!this.userProfile.name) {
+      userStore.fetchUserInfo(); // Chama a função para buscar os dados
+    }
+  },
   methods: {
     editProfile() {
-      // Lógica para editar o perfil
       alert('Editar perfil');
     },
     changePassword() {
-      // Lógica para alterar a senha
       alert('Alterar senha');
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -27,7 +27,7 @@
         <img src="@/assets/profile_pattern.jpeg" alt="Foto de Perfil" class="profile-picture" />
         <div class="profile-details">
           <p class="profile-title" @click="navigateTo('/profile')">Meu Perfil</p> <!-- Redireciona para a página Profile.vue -->
-          <p class="name">Fulaninho da Silva</p>
+          <p class="name">{{ userProfile.name }}</p>
           <p class="logout" @click="logout">Sair</p> <!-- Redireciona para a página de login -->
         </div>
       </div>
@@ -35,15 +35,41 @@
   </template>
   
   <script>
+  import userStore from "@/store/userGetInfo.js"; // Importando o arquivo da store
+  // export default {
+  //   methods: {
+  //     navigateTo(route) {
+  //       this.$router.push(route);
+  //     },
+  //     logout() {
+  //       // Aqui você pode adicionar a lógica de logout, como limpar o token de sessão
+  //       this.$router.push('/login'); // Redireciona para a página de login
+  //     }
+  //   },
+  // };
   export default {
-    methods: {
-      navigateTo(route) {
-        this.$router.push(route);
+    name: "Profile",
+    components: {
+    },
+    computed: {
+      // Acessando diretamente o estado da store
+      userProfile() {
+        return userStore.state.userProfile;
       },
-      logout() {
-        // Aqui você pode adicionar a lógica de logout, como limpar o token de sessão
-        this.$router.push('/login'); // Redireciona para a página de login
+    },
+    created() {
+      // Se os dados do usuário não estiverem carregados, chamar a ação para obter os dados
+      if (!this.userProfile.name) {
+        userStore.fetchUserInfo(); // Chama a função para buscar os dados
       }
+    },
+    methods: {
+      editProfile() {
+        alert('Editar perfil');
+      },
+      changePassword() {
+        alert('Alterar senha');
+      },
     },
   };
   </script>

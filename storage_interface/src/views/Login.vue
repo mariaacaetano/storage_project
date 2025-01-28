@@ -75,7 +75,7 @@ export default {
         );
 
         // Salvando o token de autenticação
-        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("authToken", response.data.access);
 
         // Redirecionando o usuário após o login bem-sucedido
         this.$router.push("/");

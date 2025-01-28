@@ -15,6 +15,21 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
+class UserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user  # Usuário autenticado via JWT
+        user_info = {
+            "username": user.username,
+            "email": user.email,
+            "phone_number": user.phone_number,
+            "full_name": f"{user.first_name} {user.last_name}",
+            # Outras informações do usuário podem ser retornadas aqui
+        }
+        return Response(user_info)
+    
 class CustomUserSignupView(APIView):
     permission_classes = [AllowAny]  # Permitir acesso público ao login
 
