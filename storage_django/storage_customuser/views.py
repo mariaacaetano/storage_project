@@ -11,31 +11,43 @@ from django.views import View
 from .models import CustomUser
 from .forms import SignUpForm
 from .utils import validate_user_data, get_user_response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 
-@api_view(['POST'])
-def signup(request):
-    if request.method == 'POST':
+class CustomUserSignupView(APIView):
+    permission_classes = [AllowAny]  # Permitir acesso público ao login
+
+    def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Cadastro realizado com sucesso!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class LoginView(View):
+    
+class CustomUserLoginView(APIView):
+    permission_classes = [AllowAny]  # Permitir acesso público ao login
 
     def post(self, request):
-        data = request.POST
-        user = authenticate(username=data['email'], password=data['password'])
+        username = request.data.get("email")
+        password = request.data.get("password")
 
-        if user is None:
-            return JsonResponse({'error': 'Invalid credentials'}, status=400)
+        user = authenticate(username=username, password=password)  # Autenticando via email
+        print(f"Login attempt with email: {username} and password: {password}")
 
-        login(request, user)
-        return JsonResponse({'message': 'Logged in successfully'}, status=200)
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            })
+        else:
+            return Response({"detail": f"Invalid credentials: {password} :: {username}"}, status=401)
 
 
-class EmployeeView(View):
+class EmployeeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     data_table = CustomUser  # Define a tabela usada pela classe
 
     def get(self, request):

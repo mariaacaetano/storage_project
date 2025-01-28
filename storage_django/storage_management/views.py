@@ -1,11 +1,13 @@
 from django.http import JsonResponse
 from django.views import View
 from django.contrib.auth import authenticate, login
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from .models import Produto, Categoria, Fornecedor
 from storage_customuser.models import CustomUser
 
-class BaseSiteViews(View):
+class BaseSiteViews(APIView):
     data_table = None 
 
     def get(self, request):
@@ -37,6 +39,7 @@ class BaseSiteViews(View):
 
 
 class ProductsView(BaseSiteViews):
+    permission_classes = [IsAuthenticated]
     data_table = Produto
 
 

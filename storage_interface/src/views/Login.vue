@@ -67,7 +67,7 @@ export default {
       try {
         // Fazendo requisição para a API de login
         const response = await axios.post(
-          "http://localhost:8000/customuser/login", // Substitua pelo endpoint correto da sua API
+          "http://localhost:8000/customuser/login/", // Substitua pelo endpoint correto da sua API
           {
             email: this.email,
             password: this.password,
