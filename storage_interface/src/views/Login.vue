@@ -79,7 +79,6 @@ export default {
 
         // Redirecionando o usuário após o login bem-sucedido
         this.$router.push("/");
-        alert("Login realizado com sucesso!");
       } catch (error) {
         // Tratando erros de autenticação
         if (error.response && error.response.status === 401) {

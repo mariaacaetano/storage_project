@@ -16,6 +16,7 @@ class Fornecedor(models.Model):
     
 class Categoria(models.Model):
     id_categoria = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=50, default='', verbose_name='Nome da Categoria')
     descricao_categoria = models.CharField(max_length=500, verbose_name="Descrição da Categoria")
     localizacao = models.CharField(max_length=500, verbose_name="Localização")
     

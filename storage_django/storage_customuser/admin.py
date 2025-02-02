@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PermissionType, CustomUser
+from .models import CustomUser
 
 class UserAdmin(admin.ModelAdmin):
     list_display = (
@@ -8,7 +8,4 @@ class UserAdmin(admin.ModelAdmin):
         "last_name",
         "email",
     )
-
-# Registrar os modelos no Django Admin
-admin.site.register(PermissionType)
 admin.site.register(CustomUser, UserAdmin)

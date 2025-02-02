@@ -11,24 +11,19 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-n3+)-$8nsi9!_a4^mcpgt@9f+8=j+7*0au%4ysn2t8bxscb(mo"
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -51,7 +46,8 @@ REST_FRAMEWORK = {
     ),
 }
 
-
+SESSION_COOKIE_AGE = 60 * 60 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 
 CSRF_COOKIE_NAME = 'csrftoken'  # Nome do cookie CSRF
@@ -74,6 +70,14 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
+
+# Configuração do tempo de expiração do JWT
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Token de acesso expira em 60 minutos
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Token de refresh expira em 7 dias
+    'ROTATE_REFRESH_TOKENS': False,  # Se você não quiser rotacionar o refresh token
+    'BLACKLIST_AFTER_ROTATION': False,  # Se você não quiser bloquear tokens após a rotação
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

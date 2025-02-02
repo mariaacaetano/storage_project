@@ -7,6 +7,7 @@ class SignUpForm(forms.Form):
     primeiro_nome = forms.CharField(max_length=100)
     ultimo_nome = forms.CharField(max_length=100)
     matricula = forms.CharField(max_length=10)
+    cpf = forms.CharField(max_length=11)
     email = forms.EmailField(validators=[EmailValidator()])
     password = forms.CharField(widget=forms.PasswordInput())
     confirm_password = forms.CharField(widget=forms.PasswordInput())  # Alterei o nome para seguir convenção

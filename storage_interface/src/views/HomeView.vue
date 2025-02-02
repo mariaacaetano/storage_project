@@ -6,7 +6,9 @@
     <main class="main-content">
       <div class="search-bar">
         <input type="text" placeholder="Pesquisar" />
-        <button>🔍</button>
+        <button>
+          <img src="@/assets/icones/icone-lupa.png" alt="Logo" class="logo" height="20px">
+        </button>
       </div>
     </main>
   </div>

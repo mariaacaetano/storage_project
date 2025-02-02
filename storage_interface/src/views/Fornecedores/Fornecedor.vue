@@ -8,7 +8,9 @@
       <h1 style="font-size:50px; margin: 0;">Fornecedores</h1>
       <div class="search-bar">
         <input type="text" v-model="searchQuery" placeholder="Pesquisar" />
-        <button @click="searchFuncionarios">🔍</button>
+        <button @click="searchFuncionarios">
+          <img src="@/assets/icones/icone-lupa.png" alt="Logo" class="logo" height="20px">
+        </button>
 
         <!-- Botão Criar Novo ao lado da search-bar -->
         <div class="new-employee">

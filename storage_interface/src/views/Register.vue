@@ -34,6 +34,16 @@
             required
           />
         </div>
+
+        <div class="form-group">
+          <input
+            type="text"
+            id="cpf"
+            v-model="cpf"
+            placeholder="CPF"
+            required
+          />
+        </div>
   
         <div class="form-group">
           <input
@@ -90,6 +100,7 @@
         primeironome: "",
         ultimonome: "",
         matricula: "",
+        cpf: "",
         email: "",
         password: "",
         confirmPassword: "",
