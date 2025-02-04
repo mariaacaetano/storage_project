@@ -14,20 +14,21 @@
         </button>
       </div>
       <div class="delete-session">
-        <p v-if="funcionario">
-          Tem certeza que deseja deletar <strong>{{ funcionario.full_name }}</strong>? Esta ação não poderá ser desfeita.
+        <p v-if="categoria">
+          Tem certeza que deseja deletar <strong>{{ categoria.nome }}</strong>? Esta ação não poderá ser desfeita.
         </p>
-        <p v-else>Carregando dados do funcionário...</p>
+        <p v-else>Carregando dados do categoria...</p>
         <button class="edit-button" @click="voltar">Voltar</button>
-        <button class="delete-button" @click="deletarFuncionario(funcionario.id)" v-if="funcionario">Deletar</button>
+        <button class="delete-button" @click="deletarFuncionario(categoria.id)" v-if="categoria">Deletar</button>
       </div>
     </main>
   </div>
 </template>
 
+
+
 <script>
 import axios from "axios";
-import { useRoute, useRouter } from "vue-router";
 import Sidebar from "@/components/Sidebar.vue";
 
 export default {
@@ -36,65 +37,76 @@ export default {
   },
   data() {
     return {
-      funcionario: null,
+      categoria: null,
       searchQuery: "",
-      funcionarioId: null, // Adicionei a variável funcionarioId aqui
+      categoriaId: null, // Corrigido: Adicionando categoriaId ao data()
     };
   },
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
-    const funcionarioId = route.params.id; // Obtendo o ID da URL
-
-    return { funcionarioId, router };
-  },
   created() {
-    this.funcionarioId = this.$route.params.id; // Atribuindo o id da URL ao data()
-    this.fetchFuncionario();
+    this.categoriaId = this.$route.params.id; // Obtendo ID da URL corretamente
+    this.fetchCategoria();
   },
   methods: {
-    async fetchFuncionario() {
-      if (!this.funcionarioId) {
-        console.error("ID do funcionário não encontrado na URL.");
+    async fetchCategoria() {
+      if (!this.categoriaId) {
+        console.error("ID da categoria não encontrado na URL.");
         return;
       }
 
       try {
         const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.error("Usuário não autenticado.");
+          return;
+        }
+
         const response = await axios.get(
-          `http://localhost:8000/customuser/employe_info/${this.funcionarioId}/`,
+          `http://127.0.0.1:8000/storage_management/categorias/detail/${this.categoriaId}/`, // Uso de `this.categoriaId`
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        this.funcionario = response.data;
+        this.categoria = response.data;
       } catch (error) {
-        console.error("Erro ao buscar funcionário:", error);
-        alert("Erro ao carregar informações do funcionário.");
+        console.error("Erro ao buscar categoria:", error);
+        alert("Erro ao carregar informações da categoria.");
       }
     },
-    async deletarFuncionario(id) {
+
+    async deletarFuncionario() { // Removi `id` pois já temos `this.categoriaId`
+      if (!this.categoriaId) {
+        console.error("ID da categoria não encontrado.");
+        return;
+      }
+
       try {
         const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.error("Usuário não autenticado.");
+          return;
+        }
+
         await axios.delete(
-          `http://localhost:8000/customuser/employe_info/${id}/`,
+          `http://127.0.0.1:8000/storage_management/categorias/${this.categoriaId}/delete/`, // Uso de `this.categoriaId`
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        alert("Funcionário deletado com sucesso!");
-        this.$router.push("/funcionarios"); // Redirecionar após exclusão
+        alert("Categoria deletada com sucesso!");
+        this.$router.push("/categorias"); // Redirecionar após exclusão
       } catch (error) {
-        console.error("Erro ao deletar funcionário:", error);
-        alert("Erro ao deletar funcionário.");
+        console.error("Erro ao deletar categoria:", error);
+        alert("Erro ao deletar categoria.");
       }
     },
+
     voltar() {
-      this.$router.go(-1); // Volta para a página anterior
+      this.$router.go(-1);
     },
   },
 };
 </script>
+
 
 
 

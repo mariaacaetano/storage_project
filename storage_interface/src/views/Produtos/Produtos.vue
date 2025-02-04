@@ -15,23 +15,33 @@
       </div>
 
       <!-- Lista de Produtos -->
-      <div v-for="(produto, index) in filteredProdutos" :key="index" class="card">
-        <div class="card-content">
-          <div class="info">
-            <p style="font-size: 25px"><strong>{{ produto.nome }}</strong></p>
-            <p style="font-size: 15px"><strong>Descrição:</strong> {{ produto.descricao_produto }}</p>
-            <p style="font-size: 15px"><strong>Preço:</strong> {{ produto.preco | currency }}</p>
-          </div>
-          <div class="button-group">
-            <button class="edit-button" @click="editarProduto(produto.id_produto)">Editar</button>
-            <button class="delete-button" @click="deletarProduto(produto.id_produto)">Deletar</button>
+      <div v-if="filteredProdutos.length > 0">
+        <div v-for="(produto, index) in filteredProdutos" :key="index" class="card">
+          <div class="card-content">
+            <div class="info">
+              <p style="font-size: 25px"><strong>{{ produto.nome_produto }}</strong></p>
+              <p style="font-size: 15px"><strong>Categoria:</strong> categoria 0{{ produto.categoria || 'Não informada' }}</p>
+              <p style="font-size: 15px"><strong>Quantidade:</strong> {{ produto.quantidade }}</p>
+              <p style="font-size: 15px"><strong>Código:</strong> {{ produto.codigo_produto }}</p>
+              <p style="font-size: 15px"><strong>Preço:</strong> R$ {{ produto.preco_produto }}</p>
+              <p style="font-size: 15px"><strong>Status:</strong> {{ produto.status ? 'Ativo' : 'Desativo' }}</p>
+              <p style="font-size: 15px"><strong>Fornecedor:</strong> fornecedor 0{{ produto.fornecedor || 'Não informado' }}</p>
+            </div>
+            <div class="button-group">
+              <button class="edit-button" @click="editarProduto(produto.id_produto)">Editar</button>
+              <button class="delete-button" @click="deletarProduto(produto.id_produto)">Deletar</button>
+            </div>
           </div>
         </div>
       </div>
 
+      <div v-else>
+        <p>Nenhum produto encontrado.</p>
+      </div>
     </main>
   </div>
 </template>
+
 
 <script>
 import Sidebar from '@/components/Sidebar.vue';
@@ -50,7 +60,8 @@ export default {
   computed: {
     filteredProdutos() {
       return this.produtos.filter(produto => {
-        return produto.nome.toLowerCase().includes(this.searchQuery.toLowerCase());
+        // Verifica se o produto tem o nome e, em seguida, aplica o filtro
+        return produto.nome_produto && produto.nome_produto.toLowerCase().includes(this.searchQuery.toLowerCase());
       });
     }
   },
@@ -67,7 +78,19 @@ export default {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        this.produtos = response.data;
+        // Verifica se a resposta contém produtos
+        if (response.data && Array.isArray(response.data)) {
+          this.produtos = response.data.map(produto => ({
+            ...produto,
+            categoria: produto.categoria || 'Não informada',  // Garantir que a categoria não seja undefined
+            fornecedor: produto.fornecedor || 'Não informado',  // Garantir que o fornecedor não seja undefined
+            status: produto.status !== undefined ? produto.status : false,  // Garantir que o status tenha um valor booleano
+          }));
+        } else {
+          console.error('Dados de produtos inválidos.');
+        }
+
+        console.log('Produtos carregados:', this.produtos);  // Verifica os produtos carregados
       } catch (error) {
         console.error('Erro ao carregar produtos:', error);
       }
@@ -77,25 +100,8 @@ export default {
       this.$router.push({ name: 'edit-produtos', params: { id: produtoId } });
     },
 
-    async deletarProduto(produtoId) {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          console.error('Usuário não autenticado.');
-          return;
-        }
-
-        const confirmDelete = confirm('Tem certeza que deseja deletar este produto?');
-        if (confirmDelete) {
-          await axios.delete(`http://localhost:8000/storage_management/produtos/${produtoId}/`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          this.produtos = this.produtos.filter(produto => produto.id_produto !== produtoId);
-          console.log('Produto excluído com sucesso!');
-        }
-      } catch (error) {
-        console.error('Erro ao excluir produto:', error);
-      }
+    deletarProduto(produtoId) {
+      this.$router.push({ name: 'delete-produtos', params: { id: produtoId } });
     },
 
     newProduto() {
@@ -105,10 +111,11 @@ export default {
 
     searchProdutos() {
       console.log('Buscando por: ', this.searchQuery);
+      // Aqui você pode implementar uma lógica extra de pesquisa, se necessário
     }
   },
   mounted() {
-    this.carregarProdutos();
+    this.carregarProdutos();  // Carrega os produtos ao montar o componente
   }
 };
 </script>

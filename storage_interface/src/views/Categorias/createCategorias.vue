@@ -60,7 +60,7 @@
   
           // Faz a requisição para criar a categoria
           const response = await axios.post(
-            `http://127.0.0.1:8000/storage_management/categorias/create/`,
+            `http://127.0.0.1:8000/storage_management/create_categoria/`,
             {
                 nome: categoria.value.nome,
                 descricao_categoria: categoria.value.descricao_categoria,

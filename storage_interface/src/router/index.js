@@ -17,6 +17,9 @@ import DeleteCategorias from '@/views/Categorias/deleteCategorias.vue';
 import EditCategorias from '@/views/Categorias/editCategoria.vue';
 
 import Fornecedor from '@/views/Fornecedores/Fornecedor.vue';
+import EditFornecedor from '@/views/Fornecedores/editFornecedor.vue';
+import DeleteFornecedor from '@/views/Fornecedores/deleteFornecedor.vue';
+import CreateFornecedor from '@/views/Fornecedores/createFornecedor.vue';
 
 import Funcionarios from '@/views/Funcionarios/Funcionarios.vue';
 import EditFuncionarios from '@/views/Funcionarios/editFuncionarios.vue';
@@ -38,6 +41,9 @@ const routes = [
     { path: '/categorias/novo', name: 'new-categorias', component: CreateCategoria },
 
     { path: '/fornecedor', name: 'fornecedor', component: Fornecedor },
+    { path: '/fornecedor/edit/:id', name: 'edit-fornecedor', component: EditFornecedor, props: true },
+    { path: '/fornecedor/delete/:id', name: 'delete-fornecedor', component: DeleteFornecedor, props: true },
+    { path: '/fornecedor/create', name: 'create-fornecedor', component: CreateFornecedor },    
 
     { path: '/profile', name: 'profile', component: Profile },
     { path: '/profile/edit-profile', name: 'edit-profile', component: EditProfile },

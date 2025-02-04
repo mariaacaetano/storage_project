@@ -68,7 +68,7 @@ export default {
           return;
         }
 
-        const response = await axios.get(`http://127.0.0.1:8000/storage_management/categorias/${categoriaId}/`, {
+        const response = await axios.get(`http://127.0.0.1:8000/storage_management/categorias/detail/${categoriaId}/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -83,39 +83,22 @@ export default {
 
     // Função para salvar a categoria (requisição PUT)
     const salvar = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          console.error('Usuário não autenticado.');
-          return;
-        }
-
-        if (!categoriaId) {
-          console.error('ID da categoria não encontrado.');
-          return;
-        }
-
-        const response = await axios.put(
-          `http://127.0.0.1:8000/storage_management/categorias/${categoriaId}/`,
-          {
-            nome: categoria.value.nome,
-            descricao_categoria: categoria.value.descricao_categoria,
-            localizacao: categoria.value.localizacao,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        if (response.status === 200) {
-          alert('Categoria atualizada com sucesso!');
+        if (!categoriaId) return console.error('ID da categoria não encontrado.');
+        try {
+          const token = localStorage.getItem('authToken');
+          if (!token) return console.error('Usuário não autenticado.');
+          await axios.put(`http://127.0.0.1:8000/storage_management/categorias/${categoriaId}/update/`, categoria.value, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          alert('Fornecedor atualizado com sucesso!');
           router.push('/categorias');
+        } catch (error) {
+          console.error('Erro ao salvar categoria:', error);
+          alert('Erro ao salvar categoria.');
         }
-      } catch (error) {
-        console.error('Erro ao salvar categoria:', error);
-        alert('Erro ao salvar categoria. Verifique o console para mais detalhes.');
-      }
-    };
+      };
+
+
 
     // Função para voltar à lista de categorias
     const voltar = () => {
@@ -131,7 +114,7 @@ export default {
           return;
         }
 
-        const response = await axios.get(`http://127.0.0.1:8000/storage_management/categorias/?search=${searchQuery.value}`, {
+        const response = await axios.get(`http://127.0.0.1:8000/storage_management/categorias/?search=${searchQuery.value}/update/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

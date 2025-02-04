@@ -32,6 +32,7 @@ class Produto(models.Model):
     codigo_produto = models.CharField(max_length=13, verbose_name="Código do Produto")
     preco_produto = models.FloatField(verbose_name="Preço do Produto")
     status = models.BooleanField(default=True, verbose_name="Status")
+    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.nome_produto

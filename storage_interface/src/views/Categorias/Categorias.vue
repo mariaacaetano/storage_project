@@ -77,25 +77,8 @@ export default {
       this.$router.push({ name: 'edit-categorias', params: { id: categoriaId } });
     },
 
-    async deletarCategoria(categoriaId) {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          console.error('Usuário não autenticado.');
-          return;
-        }
-
-        const confirmDelete = confirm('Tem certeza que deseja deletar esta categoria?');
-        if (confirmDelete) {
-          await axios.delete(`http://localhost:8000/storage_management/categorias/${categoriaId}/`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          this.categorias = this.categorias.filter(categoria => categoria.id_categoria !== categoriaId);
-          console.log('Categoria excluída com sucesso!');
-        }
-      } catch (error) {
-        console.error('Erro ao excluir categoria:', error);
-      }
+    deletarCategoria(categoriaId) {
+      this.$router.push({ name: 'delete-categorias', params: { id: categoriaId } });
     },
 
     newCategoria() {

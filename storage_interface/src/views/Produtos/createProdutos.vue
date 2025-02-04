@@ -1,25 +1,24 @@
 <template>
   <div class="produto-page">
+    <!-- Sidebar -->
     <Sidebar />
-    
+  
     <main class="main-content">
-      <h1 class="title">Produtos</h1>
+      <h1 style="font-size:50px; margin: 0;">Produtos</h1>
       <div class="search-bar">
         <input type="text" v-model="searchQuery" placeholder="Pesquisar" />
-        <button @click="searchProdutos">
-          <img src="@/assets/icones/icone-lupa.png" alt="Logo" class="logo" height="20px" />
-        </button>
+        <button @click="searchProdutos">🔍</button>
       </div>
-      
+  
       <section class="edit-section">
-        <h2>Editar produto</h2>
+        <h2>Criar Produto</h2>
         <form @submit.prevent="salvar">
           <label>Nome do Produto</label>
           <input type="text" v-model="produto.nome_produto" required />
-
+  
           <label>Código do Produto</label>
           <input type="text" v-model="produto.codigo_produto" required />
-
+  
           <label>Preço</label>
           <div class="preco-input">
             <select v-model="produto.moeda" class="styled-select">
@@ -29,28 +28,28 @@
             </select>
             <input type="number" step="0.01" v-model.number="produto.preco_produto" required />
           </div>
-
+  
           <label>Categoria</label>
           <select v-model="produto.categoria" required class="styled-select">
-            <option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">{{ categoria.nome }}</option>
+            <option v-for="categoria in categorias" :key="categoria.id_categoria" :value="categoria.id_categoria">{{ categoria.nome }}</option>
           </select>
-
+  
           <label>Quantidade</label>
           <input type="number" v-model.number="produto.quantidade" required />
-
+  
           <label>Status</label>
           <select v-model="produto.status" class="styled-select">
             <option value="ativo">Ativo</option>
             <option value="desativo">Desativo</option>
           </select>
-
+  
           <label>Fornecedor</label>
           <select v-model="produto.fornecedor" required class="styled-select">
-            <option v-for="fornecedor in fornecedores" :key="fornecedor.id" :value="fornecedor.id">{{ fornecedor.nome }}</option>
+            <option v-for="fornecedor in fornecedores" :key="fornecedor.id_fornecedor" :value="fornecedor.id_fornecedor">{{ fornecedor.nome_fantasia || fornecedor.nome }}</option>
           </select>
-          
+  
           <div class="buttons">
-            <button class="voltar" type="button" @click="voltar">Voltar</button>
+            <button class="voltar" @click="voltar">Voltar</button>
             <button class="salvar" type="submit">Salvar</button>
           </div>
         </form>
@@ -61,7 +60,7 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 import Sidebar from "@/components/Sidebar.vue";
 
@@ -69,25 +68,30 @@ export default {
   components: { Sidebar },
   setup() {
     const router = useRouter();
-    const route = useRoute();
     const searchQuery = ref("");
     const categorias = ref([]);
     const fornecedores = ref([]);
     const produto = ref({
-      id: null,
       nome_produto: '',
-      categoria: '',
-      quantidade: 0,
       codigo_produto: '',
       preco_produto: 0,
-      status: 'ativo',
-      fornecedor: '',
       moeda: 'R$',
+      categoria: '',
+      quantidade: 0,
+      status: '',
+      fornecedor: '',
     });
 
     const carregarCategorias = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/categorias/`);
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          console.error('Usuário não autenticado.');
+          return;
+        }
+        const response = await axios.get(`http://127.0.0.1:8000/storage_management/categorias/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         categorias.value = response.data;
       } catch (error) {
         console.error('Erro ao carregar categorias:', error);
@@ -96,57 +100,48 @@ export default {
 
     const carregarFornecedores = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/fornecedores/`);
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          console.error('Usuário não autenticado.');
+          return;
+        }
+        const response = await axios.get(`http://127.0.0.1:8000/storage_management/fornecedores/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         fornecedores.value = response.data;
       } catch (error) {
         console.error('Erro ao carregar fornecedores:', error);
       }
     };
 
-    const carregarProduto = async () => {
-      const id = route.params.id;
-      if (!id) return;
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/storage_management/produtos/${id}/`);
-        produto.value = response.data;
-      } catch (error) {
-        console.error('Erro ao carregar produto:', error);
-      }
-    };
-
     onMounted(() => {
       carregarCategorias();
       carregarFornecedores();
-      carregarProduto();
     });
 
     const salvar = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          alert('Usuário não autenticado. Faça login novamente.');
-          return;
-        }
-
-        const url = produto.value.id 
-          ? `http://127.0.0.1:8000/storage_management/produtos/${produto.value.id}/`
-          : `http://127.0.0.1:8000/storage_management/produtos/`;
-        
-        const method = produto.value.id ? 'put' : 'post';
-        
-        const response = await axios[method](url, produto.value, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if ([200, 201].includes(response.status)) {
-          alert('Produto salvo com sucesso!');
-          router.push('/produtos');
-        }
-      } catch (error) {
-        console.error('Erro ao salvar produto:', error);
-        alert('Erro ao salvar produto. Verifique o console para mais detalhes.');
+  console.log(produto.value); // Verifique os dados que estão sendo enviados
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('Usuário não autenticado.');
+        return;
       }
-    };
+      const response = await axios.post('http://127.0.0.1:8000/storage_management/create-produto/', produto.value, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.status === 201) {
+        alert('Produto criado com sucesso!');
+        router.push('/produtos');
+      } else {
+        alert('Erro ao salvar produto. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro ao salvar produto:', error);
+      alert('Erro ao salvar produto. Verifique o console para mais detalhes.');
+    }
+  };
 
     const voltar = () => {
       router.push('/produtos');
@@ -156,13 +151,14 @@ export default {
       console.log('Buscando por: ', searchQuery.value);
     };
 
-    return { produto, searchQuery, salvar, voltar, searchProdutos, categorias, fornecedores };
+    return { produto, categorias, fornecedores, searchQuery, salvar, voltar, searchProdutos };
   },
 };
 </script>
 
-  
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Afacad&display=swap');
+
 .produto-page {
   display: flex;
   font-family: 'Afacad', sans-serif;
@@ -231,9 +227,6 @@ input {
   display: flex;
   align-items: center;
 }
-.preco-input select {
-  margin-right: 10px;
-}
 
 .styled-select, input {
   width: 100%;
@@ -241,23 +234,10 @@ input {
   margin: 10px 0;  
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
 }
 
 .styled-select {
   background-color: white;
-  cursor: pointer;
-}
-
-.preco-container {
-  display: flex;
-  gap: 5px;
-}
-
-.imagem-upload button {
-  background: none;
-  border: none;
-  font-size: 20px;
   cursor: pointer;
 }
 
